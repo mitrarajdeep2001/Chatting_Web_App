@@ -1,18 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "../../utils/axios";
-// import S3 from "../../utils/s3";
-import {v4} from 'uuid';
-// import S3 from "../../utils/s3";
-import { S3_BUCKET_NAME } from "../../config";
-// ----------------------------------------------------------------------
+import { v4 } from "uuid";
 
 const initialState = {
-  user: {},
+  user: null,
   sideBar: {
     open: false,
     type: "CONTACT", // can be CONTACT, STARRED, SHARED
   },
-  isLoggedIn: true,
+  // isLoggedIn: true,
   tab: 0, // [0, 1, 2, 3]
   snackbar: {
     open: null,
@@ -79,11 +75,30 @@ const slice = createSlice({
       state.chat_type = "individual";
       state.room_id = action.payload.room_id;
     },
+    resetStates(state, action) {
+      state.chat_type = null;
+      state.room_id = null;
+      state.user = null;
+      state.users = [];
+      state.all_users = [];
+      state.friends = [];
+      state.friendRequests = [];
+    },
   },
 });
 
 // Reducer
 export default slice.reducer;
+export const {
+  resetStates,
+  selectConversation,
+  updateSideBarType,
+  updateTab,
+  updateUsers,
+  updateAllUsers,
+  updateFriends,
+  updateFriendRequests,
+} = slice.actions;
 
 // ----------------------------------------------------------------------
 
@@ -230,7 +245,9 @@ export const FetchCallLogs = () => {
       })
       .then((response) => {
         console.log(response);
-        dispatch(slice.actions.fetchCallLogs({ call_logs: response.data.data }));
+        dispatch(
+          slice.actions.fetchCallLogs({ call_logs: response.data.data })
+        );
       })
       .catch((err) => {
         console.log(err);
@@ -261,28 +278,23 @@ export const UpdateUserProfile = (formValues) => {
 
     const key = v4();
 
-    try{
+    try {
       // S3.getSignedUrl(
       //   "putObject",
       //   { Bucket: S3_BUCKET_NAME, Key: key, ContentType: `image/${file.type}` },
       //   async (_err, presignedURL) => {
       //     await fetch(presignedURL, {
       //       method: "PUT",
-  
       //       body: file,
-  
       //       headers: {
       //         "Content-Type": file.type,
       //       },
       //     });
       //   }
       // );
-    }
-    catch(error) {
+    } catch (error) {
       console.log(error);
     }
-
-    
 
     axios
       .patch(

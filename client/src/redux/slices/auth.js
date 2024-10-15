@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import axios from "../../utils/axios";
-import { showSnackbar } from "./app";
+import { resetStates, showSnackbar } from "./app";
 
 // ----------------------------------------------------------------------
 
@@ -9,10 +9,10 @@ const initialState = {
   isLoggedIn: false,
   token: "",
   isLoading: false,
-  user: null,
-  user_id: null,
-  email: "",
   error: false,
+  // user: null,
+  // user_id: null,
+  // email: "",
 };
 
 const slice = createSlice({
@@ -26,12 +26,12 @@ const slice = createSlice({
     logIn(state, action) {
       state.isLoggedIn = action.payload.isLoggedIn;
       state.token = action.payload.token;
-      state.user_id = action.payload.user_id;
+      // state.user_id = action.payload.user_id;
     },
     signOut(state, action) {
       state.isLoggedIn = false;
       state.token = "";
-      state.user_id = null;
+      // state.user_id = null;
     },
     updateRegisterEmail(state, action) {
       state.email = action.payload.email;
@@ -41,8 +41,8 @@ const slice = createSlice({
 
 // Reducer
 export default slice.reducer;
-export const { logIn, signOut, updateIsLoading, updateRegisterEmail } = slice.actions;
-
+export const { logIn, signOut, updateIsLoading, updateRegisterEmail } =
+  slice.actions;
 
 export function NewPassword(formValues) {
   return async (dispatch, getState) => {
@@ -63,24 +63,20 @@ export function NewPassword(formValues) {
       .then(function (response) {
         console.log(response);
         dispatch(
-            logIn({
-              isLoggedIn: true,
-              token: response.data.token,
-            })
-          );
+          logIn({
+            isLoggedIn: true,
+            token: response.data.token,
+          })
+        );
         dispatch(
           showSnackbar({ severity: "success", message: response.data.message })
         );
-        dispatch(
-          updateIsLoading({ isLoading: false, error: false })
-        );
+        dispatch(updateIsLoading({ isLoading: false, error: false }));
       })
       .catch(function (error) {
         console.log(error);
         dispatch(showSnackbar({ severity: "error", message: error.message }));
-        dispatch(
-          updateIsLoading({ isLoading: false, error: true })
-        );
+        dispatch(updateIsLoading({ isLoading: false, error: true }));
       });
   };
 }
@@ -107,16 +103,12 @@ export function ForgotPassword(formValues) {
         dispatch(
           showSnackbar({ severity: "success", message: response.data.message })
         );
-        dispatch(
-          updateIsLoading({ isLoading: false, error: false })
-        );
+        dispatch(updateIsLoading({ isLoading: false, error: false }));
       })
       .catch(function (error) {
         console.log(error);
         dispatch(showSnackbar({ severity: "error", message: error.message }));
-        dispatch(
-          updateIsLoading({ isLoading: false, error: true })
-        );
+        dispatch(updateIsLoading({ isLoading: false, error: true }));
       });
   };
 }
@@ -148,27 +140,24 @@ export function LoginUser(formValues) {
             user_id: response.data.user_id,
           })
         );
-        window.localStorage.setItem("user_id", response.data.user_id);
+        // window.localStorage.setItem("user_id", response.data.user_id);
         dispatch(
           showSnackbar({ severity: "success", message: response.data.message })
         );
-        dispatch(
-          updateIsLoading({ isLoading: false, error: false })
-        );
+        dispatch(updateIsLoading({ isLoading: false, error: false }));
       })
       .catch(function (error) {
         console.log(error);
         dispatch(showSnackbar({ severity: "error", message: error.message }));
-        dispatch(
-          updateIsLoading({ isLoading: false, error: true })
-        );
+        dispatch(updateIsLoading({ isLoading: false, error: true }));
       });
   };
 }
 
 export function LogoutUser() {
   return async (dispatch, getState) => {
-    window.localStorage.removeItem("user_id");
+    // window.localStorage.removeItem("user_id");
+    dispatch(resetStates());
     dispatch(signOut());
   };
 }
@@ -191,23 +180,17 @@ export function RegisterUser(formValues) {
       )
       .then(function (response) {
         console.log(response);
-        dispatch(
-          updateRegisterEmail({ email: formValues.email })
-        );
+        dispatch(updateRegisterEmail({ email: formValues.email }));
 
         dispatch(
           showSnackbar({ severity: "success", message: response.data.message })
         );
-        dispatch(
-          updateIsLoading({ isLoading: false, error: false })
-        );
+        dispatch(updateIsLoading({ isLoading: false, error: false }));
       })
       .catch(function (error) {
         console.log(error);
         dispatch(showSnackbar({ severity: "error", message: error.message }));
-        dispatch(
-          updateIsLoading({ error: true, isLoading: false })
-        );
+        dispatch(updateIsLoading({ error: true, isLoading: false }));
       })
       .finally(() => {
         if (!getState().auth.error) {
@@ -244,20 +227,15 @@ export function VerifyEmail(formValues) {
           })
         );
 
-
         dispatch(
           showSnackbar({ severity: "success", message: response.data.message })
         );
-        dispatch(
-          updateIsLoading({ isLoading: false, error: false })
-        );
+        dispatch(updateIsLoading({ isLoading: false, error: false }));
       })
       .catch(function (error) {
         console.log(error);
         dispatch(showSnackbar({ severity: "error", message: error.message }));
-        dispatch(
-          updateIsLoading({ error: true, isLoading: false })
-        );
+        dispatch(updateIsLoading({ error: true, isLoading: false }));
       });
   };
 }

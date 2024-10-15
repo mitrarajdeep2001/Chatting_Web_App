@@ -74,7 +74,7 @@ exports.sendOTP = catchAsync(async (req, res, next) => {
 
   await user.save({ new: true, validateModifiedOnly: true });
 
-  console.log(new_otp, 'OTP', user, 'USER');
+  console.log(new_otp, "OTP", user, "USER");
 
   // TODO send mail
   mailService.sendEmail({
@@ -202,8 +202,6 @@ exports.protect = catchAsync(async (req, res, next) => {
   // 2) Verification of token
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
-  console.log(decoded);
-
   // 3) Check if user still exists
 
   const this_user = await User.findById(decoded.userId);
@@ -218,6 +216,8 @@ exports.protect = catchAsync(async (req, res, next) => {
       message: "User recently changed password! Please log in again.",
     });
   }
+  this_user.password = null;
+  console.log(this_user, "USER");
 
   // GRANT ACCESS TO PROTECTED ROUTE
   req.user = this_user;

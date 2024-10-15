@@ -18,7 +18,6 @@ import axiosInstance from "../../../utils/axios";
 
 import { socket } from "../../../socket";
 import { ResetAudioCallQueue } from "../../../redux/slices/audioCall";
-import { AWS_S3_REGION, S3_BUCKET_NAME } from "../../../config";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
